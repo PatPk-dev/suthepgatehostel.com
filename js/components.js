@@ -31,9 +31,19 @@
             });
 
             // Sub-pages: navbar starts scrolled (solid background)
+            const navbar = headerEl.querySelector('.navbar');
             if (isSubPage) {
-                const navbar = headerEl.querySelector('.navbar');
                 if (navbar) navbar.classList.add('scrolled');
+            } else {
+                // Determine scroll for index
+                if (navbar) {
+                    const onScroll = () => {
+                        if (window.scrollY > 80) navbar.classList.add('scrolled');
+                        else navbar.classList.remove('scrolled');
+                    };
+                    window.addEventListener('scroll', onScroll, { passive: true });
+                    onScroll(); // initial check
+                }
             }
 
             // Re-init nav toggle (hamburger menu)

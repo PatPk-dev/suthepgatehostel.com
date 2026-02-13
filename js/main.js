@@ -137,22 +137,50 @@ function renderStats(stats) {
 }
 
 /* --- Render Reviews --- */
+/* --- Render Reviews --- */
+/* --- Render Reviews --- */
 function renderReviews(reviews) {
   const container = document.getElementById('reviews-track');
   if (!container) return;
+
+  const getSourceLogo = (source) => {
+    if (!source) return '';
+    const src = source.toLowerCase();
+
+    // Minimalist Logos for Card
+    if (src === 'google') {
+      return `<div class="source-icon google" title="Google"><span style="color:#4285F4">G</span></div>`;
+    }
+    if (src === 'booking') {
+      return `<div class="source-icon booking" title="Booking.com" style="color:#003580; font-weight:800; font-family:sans-serif;">B.</div>`;
+    }
+    if (src === 'agoda') {
+      return `<div class="source-icon agoda" title="Agoda" style="display:flex; gap:2px;"><div style="width:6px; height:6px; background:#9E9E9E; border-radius:50%"></div><div style="width:6px; height:6px; background:#FF5722; border-radius:50%"></div></div>`;
+    }
+    return `<div class="source-icon" style="font-size:0.8rem; font-weight:bold;">${source.charAt(0)}</div>`;
+  };
+
   container.innerHTML = reviews.map(r => `
     <div class="review-card">
-      <div class="review-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div>
-      <p class="review-text">${r.text}</p>
-      <div class="review-author">
-        <div class="review-avatar">${r.name.charAt(0)}</div>
-        <div>
-          <div class="review-name">${r.name}</div>
-          <div class="review-country">${r.country}</div>
-        </div>
+      <div class="review-avatar-wrapper">
+         <div class="review-avatar">${r.name.charAt(0)}</div>
+      </div>
+      
+      <div class="review-source-corner">
+         ${getSourceLogo(r.source)}
+      </div>
+
+      <div class="review-content">
+        <div class="review-name">${r.name}</div>
+        <div class="review-role">${r.country || 'Guest'}</div>
+        <div class="review-stars">${'★'.repeat(r.rating)}</div>
+        
+        <div class="review-quote-mark">“</div>
+        <p class="review-text">${r.text}</p>
       </div>
     </div>
   `).join('');
+
   initReviewsCarousel();
 }
 
@@ -303,62 +331,152 @@ function animateCounter(el) {
   requestAnimationFrame(update);
 }
 
-/* --- Reviews Carousel --- */
+/* --- Reviews Carousel (Infinite Loop) --- */
 function initReviewsCarousel() {
   const track = document.getElementById('reviews-track');
   const prevBtn = document.getElementById('reviews-prev');
   const nextBtn = document.getElementById('reviews-next');
   if (!track || !prevBtn || !nextBtn) return;
 
-  let currentIndex = 0;
-  const cards = track.children;
-  if (!cards.length) return;
+  // Clear existing clones if any (prevent duplication on re-init)
+  const existingClones = track.querySelectorAll('.clone');
+  existingClones.forEach(el => el.remove());
+
+  const originalCards = Array.from(track.children);
+  const cardCount = originalCards.length;
+  if (cardCount === 0) return;
+
+  // Determine how many clones we need (enough to cover the widest view)
+  // Max visible cards usually 4 (desktop), so 4 clones at each end is safe
+  const cloneCount = 4;
+
+  // Clone End -> Start (for prev loop)
+  for (let i = 0; i < cloneCount; i++) {
+    const originalIndex = (cardCount - 1 - i + cardCount) % cardCount; // safe modulo
+    const clone = originalCards[originalIndex].cloneNode(true);
+    clone.classList.add('clone');
+    clone.setAttribute('aria-hidden', 'true');
+    track.prepend(clone);
+  }
+
+  // Clone Start -> End (for next loop)
+  for (let i = 0; i < cloneCount; i++) {
+    const clone = originalCards[i % cardCount].cloneNode(true);
+    clone.classList.add('clone');
+    clone.setAttribute('aria-hidden', 'true');
+    track.appendChild(clone);
+  }
+
+  // Initial state: shifted by cloneCount
+  let currentIndex = cloneCount;
+  const params = { isJumping: false }; // Lock state during jump
+
+  function getCardWidth() {
+    const cards = track.children;
+    if (!cards.length) return 0;
+    // card width + gap (24px defined in CSS)
+    return cards[0].offsetWidth + 24;
+  }
 
   function getVisibleCount() {
     if (window.innerWidth <= 768) return 1;
     if (window.innerWidth <= 1024) return 2;
-    return 3;
+    if (window.innerWidth <= 1280) return 3;
+    return 4; // Show 4 cards on very large screens
   }
 
-  function updateCarousel() {
-    const visibleCount = getVisibleCount();
-    const maxIndex = Math.max(0, cards.length - visibleCount);
-    currentIndex = Math.min(currentIndex, maxIndex);
+  function updateCarousel(instant = false) {
+    const cardWidth = getCardWidth();
+    // Center logic? No, standard left-align carousel
+    // If we want centering with variable width, we might need offset adjustment
+    // but the request was "make it narrower to see many". Left align is standard.
 
-    const cardWidth = cards[0].offsetWidth + 24; // gap
-    track.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
+    if (instant) {
+      track.style.transition = 'none';
+      track.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
+      track.offsetHeight; // Force reflow
+      track.style.transition = ''; // Restore CSS transition
+    } else {
+      track.style.transition = 'transform 0.5s cubic-bezier(0.25, 1, 0.5, 1)';
+      track.style.transform = `translateX(-${currentIndex * cardWidth}px)`;
+    }
   }
+
+  // Set initial position without animation
+  // Use timeout to ensure DOM is ready and width is calculated
+  setTimeout(() => updateCarousel(true), 50);
+
+  // Handle loop jump on transition end
+  track.addEventListener('transitionend', () => {
+    if (params.isJumping) return;
+
+    // If we scrolled past the real last item to the first end-clone
+    if (currentIndex >= cardCount + cloneCount) {
+      params.isJumping = true;
+      currentIndex = cloneCount; // Jump to real first item
+      updateCarousel(true);
+      setTimeout(() => { params.isJumping = false; }, 50);
+    }
+    // If we scrolled past the real first item to the last start-clone
+    else if (currentIndex < cloneCount) {
+      params.isJumping = true;
+      currentIndex = cardCount + cloneCount - 1; // Jump to real last item (adjusted logic)
+      // Actually simpler: 
+      // The start clones are [End3, End2, End1] ... [Real1...RealN] ... [Start1, Start2, Start3]
+      // Index < cloneCount means we are in start clones.
+      // If index becomes cloneCount - 1 (which acts as LastItem), we want to jump to RealLastItem index.
+      // RealLastItem index is cloneCount + cardCount - 1.
+      currentIndex = cloneCount + cardCount - (cloneCount - currentIndex);
+      updateCarousel(true);
+      setTimeout(() => { params.isJumping = false; }, 50);
+    }
+  });
+
+  const nextSlide = () => {
+    if (currentIndex >= track.children.length - 1) return; // Prevention
+    currentIndex++;
+    updateCarousel();
+  };
+
+  const prevSlide = () => {
+    if (currentIndex <= 0) return; // Prevention
+    currentIndex--;
+    updateCarousel();
+  };
+
+  // Event Listeners
+  nextBtn.addEventListener('click', () => {
+    stopAutoplay();
+    nextSlide();
+    startAutoplay();
+  });
 
   prevBtn.addEventListener('click', () => {
-    if (currentIndex > 0) currentIndex--;
-    updateCarousel();
+    stopAutoplay();
+    prevSlide();
+    startAutoplay();
   });
 
-  nextBtn.addEventListener('click', () => {
-    const visibleCount = getVisibleCount();
-    const maxIndex = Math.max(0, cards.length - visibleCount);
-    if (currentIndex < maxIndex) currentIndex++;
-    updateCarousel();
-  });
+  // Autoplay
+  let autoplayInterval;
+  function startAutoplay() {
+    stopAutoplay();
+    autoplayInterval = setInterval(nextSlide, 4000);
+  }
 
-  window.addEventListener('resize', updateCarousel);
+  function stopAutoplay() {
+    clearInterval(autoplayInterval);
+  }
 
-  // Auto-play
-  let autoplay = setInterval(() => {
-    const visibleCount = getVisibleCount();
-    const maxIndex = Math.max(0, cards.length - visibleCount);
-    currentIndex = currentIndex >= maxIndex ? 0 : currentIndex + 1;
-    updateCarousel();
-  }, 5000);
+  startAutoplay();
+  track.parentElement.addEventListener('mouseenter', stopAutoplay);
+  track.parentElement.addEventListener('mouseleave', startAutoplay);
 
-  track.parentElement.addEventListener('mouseenter', () => clearInterval(autoplay));
-  track.parentElement.addEventListener('mouseleave', () => {
-    autoplay = setInterval(() => {
-      const visibleCount = getVisibleCount();
-      const maxIndex = Math.max(0, cards.length - visibleCount);
-      currentIndex = currentIndex >= maxIndex ? 0 : currentIndex + 1;
-      updateCarousel();
-    }, 5000);
+  // Re-calculate width on resize (reset position to safe index)
+  window.addEventListener('resize', () => {
+    // Optional: reset to a safe "real" index on heavy resize to avoid alignment issues
+    currentIndex = cloneCount;
+    updateCarousel(true);
   });
 }
 

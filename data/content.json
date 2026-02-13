@@ -234,35 +234,40 @@
             "country": "Australia",
             "rating": 5,
             "text": "Amazing hostel! The location is perfect, just a short walk from the old city. The staff was incredibly friendly and helpful. The dorm was super clean and the bed was comfortable. Will definitely come back!",
-            "date": "2026-01"
+            "date": "2026-01",
+            "source": "google"
         },
         {
             "name": "Marco T.",
             "country": "Italy",
             "rating": 5,
             "text": "Best hostel I've stayed at in Thailand. The vibe is so chill and welcoming. Love the garden area and the cafe. Met some amazing people here. Highly recommend the private room!",
-            "date": "2026-01"
+            "date": "2026-01",
+            "source": "booking"
         },
         {
             "name": "Yuki K.",
             "country": "Japan",
             "rating": 5,
             "text": "とても清潔で素敵なホステルです。スタッフがとても親切で、チェンマイの観光情報もたくさん教えてくれました。ドイステープへのアクセスも良く、最高の滞在でした。",
-            "date": "2025-12"
+            "date": "2025-12",
+            "source": "agoda"
         },
         {
             "name": "Tom & Lisa",
             "country": "Germany",
             "rating": 5,
             "text": "We loved everything about Suthep Gate! The deluxe room was gorgeous with a beautiful mountain view. The breakfast was delicious. Perfect location to explore the old city. Thank you for making our honeymoon special!",
-            "date": "2025-12"
+            "date": "2025-12",
+            "source": "google"
         },
         {
             "name": "Backpacker Joe",
             "country": "USA",
             "rating": 4,
             "text": "Great value for money. Clean dorm, fast WiFi, and the co-working space is a nice bonus. The location near Suthep Gate gives you easy access to everything. The night market is just a walk away!",
-            "date": "2025-11"
+            "date": "2025-11",
+            "source": "hostelworld"
         }
     ],
     "location": {
