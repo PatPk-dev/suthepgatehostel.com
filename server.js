@@ -16,6 +16,11 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname)));
 app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
 
+// Explicit route for root to ensure Vercel finds index.html
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
 // --- Multer config for image uploads ---
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
