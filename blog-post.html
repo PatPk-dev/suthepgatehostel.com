@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>บทความ | Suthep Gate Hostel</title>
+    <meta name="description" content="อ่านบทความเกี่ยวกับเชียงใหม่จาก Suthep Gate Hostel">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://suthepgatehostel.com/blog">
+
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="บทความ | Suthep Gate Hostel">
+    <meta property="og:description" content="อ่านบทความเกี่ยวกับเชียงใหม่">
+    <meta property="og:url" content="https://suthepgatehostel.com/blog">
+
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        /* Blog Post Detail Styles */
+        .post-hero {
+            position: relative;
+            height: 50vh;
+            min-height: 360px;
+            max-height: 500px;
+            overflow: hidden;
+        }
+
+        .post-hero-img {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            transform: scale(1.02);
+            transition: transform 8s ease-out;
+        }
+
+        .post-hero::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg,
+                    rgba(0, 0, 0, 0.2) 0%,
+                    rgba(0, 0, 0, 0.1) 40%,
+                    rgba(0, 0, 0, 0.65) 100%);
+        }
+
+        .post-hero-content {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 2;
+            padding: 40px;
+        }
+
+        .post-hero-content .container {
+            max-width: 900px;
+        }
+
+        .post-hero-content h1 {
+            color: #fff;
+            font-size: clamp(1.8rem, 4vw, 2.8rem);
+            margin-bottom: 12px;
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .post-meta {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 0.9rem;
+        }
+
+        .post-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .post-meta-divider {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Article Body */
+        .post-body {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 60px 24px 80px;
+        }
+
+        .post-back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--accent);
+            margin-bottom: 32px;
+            padding: 8px 16px;
+            border-radius: var(--radius-full);
+            background: var(--accent-subtle);
+            transition: all 0.2s;
+        }
+
+        .post-back-link:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .post-article {
+            font-family: var(--font-th);
+            font-size: 1.05rem;
+            line-height: 2;
+            color: var(--text-secondary);
+        }
+
+        .post-article h2 {
+            font-size: 1.5rem;
+            margin: 40px 0 16px;
+            color: var(--text-primary);
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--accent-subtle);
+        }
+
+        .post-article h3 {
+            font-size: 1.2rem;
+            margin: 32px 0 12px;
+            color: var(--text-primary);
+        }
+
+        .post-article p {
+            margin-bottom: 20px;
+            font-size: 1.05rem;
+            line-height: 2;
+        }
+
+        .post-article ul,
+        .post-article ol {
+            margin: 16px 0;
+            padding-left: 24px;
+            list-style: disc;
+        }
+
+        .post-article li {
+            margin-bottom: 8px;
+            font-family: var(--font-th);
+            color: var(--text-secondary);
+            line-height: 1.8;
+        }
+
+        .post-article blockquote {
+            border-left: 4px solid var(--accent);
+            padding: 16px 24px;
+            margin: 24px 0;
+            background: var(--accent-subtle);
+            border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+            font-style: italic;
+        }
+
+        .post-article img {
+            width: 100%;
+            border-radius: var(--radius-md);
+            margin: 24px 0;
+        }
+
+        /* Tags */
+        .post-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 40px 0 32px;
+            padding-top: 32px;
+            border-top: 1px solid var(--border-gray);
+        }
+
+        .post-tag {
+            font-size: 0.82rem;
+            padding: 6px 16px;
+            background: var(--accent-subtle);
+            color: var(--accent);
+            border-radius: var(--radius-full);
+            font-weight: 500;
+            font-family: var(--font-th);
+        }
+
+        /* Share */
+        .post-share {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 48px;
+        }
+
+        .post-share-label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .post-share-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid var(--border-gray);
+            background: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .post-share-btn:hover {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
+
+        /* Author Card */
+        .post-author {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 24px;
+            background: var(--light-gray);
+            border-radius: var(--radius-lg);
+            margin-bottom: 48px;
+        }
+
+        .post-author-avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .post-author-name {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 2px;
+        }
+
+        .post-author-bio {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-family: var(--font-th);
+        }
+
+        /* Related Posts */
+        .related-section {
+            padding: 80px 0;
+            background: var(--light-gray);
+        }
+
+        .related-section .section-header {
+            margin-bottom: 40px;
+        }
+
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        /* Loading */
+        .post-loading {
+            text-align: center;
+            padding: 120px 24px;
+            font-family: var(--font-th);
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .post-loading .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--border-gray);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .post-not-found {
+            text-align: center;
+            padding: 120px 24px;
+        }
+
+        .post-not-found h2 {
+            margin-bottom: 12px;
+        }
+
+        .post-not-found p {
+            font-family: var(--font-th);
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .post-hero {
+                height: 40vh;
+                min-height: 280px;
+            }
+
+            .post-hero-content {
+                padding: 24px;
+            }
+
+            .post-body {
+                padding: 40px 20px 60px;
+            }
+
+            .related-grid {
+                grid-template-columns: 1fr;
+                max-width: 500px;
+                margin: 0 auto;
+            }
+        }
+    </style>
+</head>
+
+<body data-page="blog">
+
+    <!-- Navigation -->
+    <div id="site-header"></div>
+
+    <!-- Post Content (loaded dynamically) -->
+    <div id="post-wrapper">
+        <div class="post-loading">
+            <div class="spinner"></div>
+            <p>กำลังโหลดบทความ...</p>
+        </div>
+    </div>
+
+    <!-- Related Posts -->
+    <section class="related-section" id="related-section" style="display:none;">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">บทความอื่นๆ</span>
+                <h2>You Might Also Like</h2>
+            </div>
+            <div class="related-grid" id="related-grid"></div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+        <div class="container" style="position:relative;">
+            <h2 class="reveal">Come Experience Chiang Mai</h2>
+            <p class="reveal th">มาสัมผัสเชียงใหม่ด้วยตัวเอง จองที่พักกับเราวันนี้</p>
+            <a href="#booking" class="btn btn-gold reveal booking-link" target="_blank" rel="noopener">Book Your
+                Stay</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <div id="site-footer"></div>
+
+    <button class="back-to-top" id="back-to-top" aria-label="Back to top">↑</button>
+
+    <script src="/js/components.js"></script>
+    <script src="/js/main.js"></script>
+    <script>
+        (async function () {
+            const params = new URLSearchParams(window.location.search);
+            const slug = params.get('slug');
+
+            if (!slug) {
+                showNotFound();
+                return;
+            }
+
+            try {
+                const res = await fetch('/data/blog.json');
+                if (!res.ok) throw new Error('Failed to fetch');
+                const data = await res.json();
+                const posts = data.posts || [];
+
+                const post = posts.find(p => p.slug === slug);
+                if (!post) {
+                    showNotFound();
+                    return;
+                }
+
+                renderPost(post);
+                renderRelated(posts.filter(p => p.id !== post.id));
+
+                // Update page meta
+                document.title = `${post.title} | Suthep Gate Hostel`;
+                const metaDesc = document.querySelector('meta[name="description"]');
+                if (metaDesc) metaDesc.content = post.excerpt;
+                const ogTitle = document.querySelector('meta[property="og:title"]');
+                if (ogTitle) ogTitle.content = post.title;
+
+            } catch (err) {
+                console.error(err);
+                showNotFound();
+            }
+        })();
+
+        function renderPost(post) {
+            const dateStr = new Date(post.date).toLocaleDateString('th-TH', {
+                year: 'numeric', month: 'long', day: 'numeric'
+            });
+
+            // Simple markdown-like content rendering
+            const renderedContent = renderMarkdown(post.content);
+
+            const wrapper = document.getElementById('post-wrapper');
+            wrapper.innerHTML = `
+                <div class="post-hero">
+                    <div class="post-hero-img" style="background-image: url('${post.image}')"></div>
+                    <div class="post-hero-content">
+                        <div class="container">
+                            <h1>${post.title}</h1>
+                            <div class="post-meta">
+                                <div class="post-meta-item">📅 ${dateStr}</div>
+                                <div class="post-meta-divider"></div>
+                                <div class="post-meta-item">✍️ ${post.author}</div>
+                                <div class="post-meta-divider"></div>
+                                <div class="post-meta-item">🏷️ ${(post.tags || []).join(', ')}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="post-body">
+                    <a href="/blog.html" class="post-back-link">← กลับไปหน้าบล็อก</a>
+
+                    <article class="post-article" itemscope itemtype="https://schema.org/BlogPosting">
+                        <meta itemprop="headline" content="${post.title}">
+                        <meta itemprop="datePublished" content="${post.date}">
+                        <meta itemprop="author" content="${post.author}">
+                        ${renderedContent}
+                    </article>
+
+                    <div class="post-tags">
+                        ${(post.tags || []).map(t => `<span class="post-tag">${t}</span>`).join('')}
+                    </div>
+
+                    <div class="post-share">
+                        <span class="post-share-label">แชร์:</span>
+                        <button class="post-share-btn" onclick="sharePost('facebook')" title="Facebook">📘</button>
+                        <button class="post-share-btn" onclick="sharePost('twitter')" title="Twitter">🐦</button>
+                        <button class="post-share-btn" onclick="sharePost('line')" title="LINE">💬</button>
+                        <button class="post-share-btn" onclick="sharePost('copy')" title="คัดลอกลิงก์">🔗</button>
+                    </div>
+
+                    <div class="post-author">
+                        <div class="post-author-avatar">${(post.author || 'S').charAt(0)}</div>
+                        <div>
+                            <div class="post-author-name">${post.author}</div>
+                            <div class="post-author-bio">ทีมงาน Suthep Gate Hostel — แนะนำสถานที่ท่องเที่ยว ที่กิน และเรื่องราวดีๆ ในเชียงใหม่</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderMarkdown(text) {
+            if (!text) return '<p>ไม่มีเนื้อหา</p>';
+
+            return text
+                // Headers
+                .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+                .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+                .replace(/^# (.+)$/gm, '<h2>$1</h2>')
+                // Bold
+                .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+                // Italic
+                .replace(/\*(.+?)\*/g, '<em>$1</em>')
+                // Images
+                .replace(/!\[(.+?)\]\((.+?)\)/g, '<img src="$2" alt="$1" loading="lazy">')
+                // Links
+                .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>')
+                // Line breaks → paragraphs
+                .split('\n\n')
+                .map(block => {
+                    block = block.trim();
+                    if (!block) return '';
+                    if (block.startsWith('<h')) return block;
+                    if (block.startsWith('<img')) return block;
+                    return `<p>${block.replace(/\n/g, '<br>')}</p>`;
+                })
+                .join('\n');
+        }
+
+        function renderRelated(posts) {
+            if (!posts.length) return;
+            const section = document.getElementById('related-section');
+            const grid = document.getElementById('related-grid');
+            section.style.display = '';
+
+            grid.innerHTML = posts.slice(0, 3).map(post => `
+                <a href="/blog-post.html?slug=${post.slug}" class="blog-card reveal" style="text-decoration:none; color:inherit;">
+                    <div class="blog-image">
+                        <img src="${post.image}" alt="${post.title}" loading="lazy" width="400" height="220">
+                    </div>
+                    <div class="blog-content">
+                        <time class="blog-date" datetime="${post.date}">${new Date(post.date).toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' })}</time>
+                        <h3>${post.title}</h3>
+                        <p class="th">${post.excerpt}</p>
+                        <div class="blog-tags">
+                            ${(post.tags || []).slice(0, 2).map(t => `<span class="blog-tag">${t}</span>`).join('')}
+                        </div>
+                    </div>
+                </a>
+            `).join('');
+
+            // Re-init reveals
+            if (typeof initScrollReveal === 'function') initScrollReveal();
+        }
+
+        function showNotFound() {
+            document.getElementById('post-wrapper').innerHTML = `
+                <div class="post-not-found">
+                    <h2>😔 ไม่พบบทความ</h2>
+                    <p>บทความที่คุณค้นหาไม่มีในระบบ หรืออาจถูกลบไปแล้ว</p>
+                    <a href="/blog.html" class="btn btn-primary">← กลับไปหน้าบล็อก</a>
+                </div>
+            `;
+        }
+
+        function sharePost(platform) {
+            const url = window.location.href;
+            const title = document.title;
+            const map = {
+                facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
+                twitter: `https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(title)}`,
+                line: `https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(url)}`,
+            };
+
+            if (platform === 'copy') {
+                navigator.clipboard.writeText(url);
+                const btn = event.target;
+                btn.textContent = '✅';
+                setTimeout(() => btn.textContent = '🔗', 2000);
+                return;
+            }
+
+            if (map[platform]) {
+                window.open(map[platform], '_blank', 'width=600,height=400');
+            }
+        }
+    </script>
+</body>
+
+</html>

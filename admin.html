@@ -1,0 +1,1956 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Suthep Gate Hostel</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Noto+Sans+Thai:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0F1117;
+            --surface: #1A1D27;
+            --surface-hover: #22252F;
+            --border: #2A2D3A;
+            --text: #E8E8EC;
+            --text-muted: #8E8FA0;
+            --accent: #4CAF50;
+            --accent-hover: #5BBF5F;
+            --danger: #EF5350;
+            --warning: #FF9800;
+            --radius: 12px;
+            --font-en: 'Outfit', sans-serif;
+            --font-th: 'Noto Sans Thai', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-en);
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* Login Screen */
+        .login-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-box {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 48px;
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+        }
+
+        .login-box h1 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        .login-box p {
+            color: var(--text-muted);
+            margin-bottom: 32px;
+            font-family: var(--font-th);
+        }
+
+        .login-box input {
+            width: 100%;
+            padding: 14px 18px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            color: var(--text);
+            font-size: 1rem;
+            font-family: var(--font-en);
+            margin-bottom: 16px;
+            transition: border-color 0.2s;
+        }
+
+        .login-box input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .login-box button {
+            width: 100%;
+            padding: 14px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .login-box button:hover {
+            background: var(--accent-hover);
+        }
+
+        .login-error {
+            color: var(--danger);
+            font-size: 0.85rem;
+            margin-top: 12px;
+            display: none;
+            font-family: var(--font-th);
+        }
+
+        /* Dashboard */
+        .dashboard {
+            display: none;
+        }
+
+        .dash-header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .dash-header h2 {
+            font-size: 1.2rem;
+        }
+
+        .dash-header .user-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .dash-header .logout-btn {
+            padding: 8px 20px;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .dash-header .logout-btn:hover {
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+
+        .dash-layout {
+            display: flex;
+            min-height: calc(100vh - 61px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            padding: 24px 0;
+            flex-shrink: 0;
+        }
+
+        .sidebar-nav a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar-nav a:hover {
+            background: var(--surface-hover);
+            color: var(--text);
+        }
+
+        .sidebar-nav a.active {
+            background: var(--surface-hover);
+            color: var(--accent);
+            border-left-color: var(--accent);
+        }
+
+        /* Content Area */
+        .dash-content {
+            flex: 1;
+            padding: 32px;
+            overflow-y: auto;
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        .panel-title {
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        .panel-subtitle {
+            color: var(--text-muted);
+            margin-bottom: 32px;
+            font-family: var(--font-th);
+        }
+
+        /* Cards */
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 24px;
+        }
+
+        .card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Form Elements */
+        .form-row {
+            margin-bottom: 20px;
+        }
+
+        .form-row label {
+            display: block;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+            font-family: var(--font-th);
+        }
+
+        .form-row input,
+        .form-row textarea,
+        .form-row select {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            color: var(--text);
+            font-size: 0.95rem;
+            font-family: var(--font-th);
+            transition: border-color 0.2s;
+        }
+
+        .form-row input:focus,
+        .form-row textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .form-row textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-row-inline {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        /* Buttons */
+        .btn-save {
+            padding: 12px 28px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-save:hover {
+            background: var(--accent-hover);
+        }
+
+        .btn-danger {
+            padding: 8px 16px;
+            background: transparent;
+            border: 1px solid var(--danger);
+            color: var(--danger);
+            border-radius: var(--radius);
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-danger:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-secondary {
+            padding: 10px 20px;
+            background: var(--surface-hover);
+            border: 1px solid var(--border);
+            color: var(--text);
+            border-radius: var(--radius);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent);
+        }
+
+        /* Status Messages */
+        .toast {
+            position: fixed;
+            top: 80px;
+            right: 32px;
+            padding: 14px 24px;
+            border-radius: var(--radius);
+            font-size: 0.9rem;
+            font-family: var(--font-th);
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s;
+            z-index: 999;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .toast.success {
+            background: #1B5E20;
+            color: #A5D6A7;
+            border: 1px solid #2E7D32;
+        }
+
+        .toast.error {
+            background: #7F1D1D;
+            color: #FCA5A5;
+            border: 1px solid #B91C1C;
+        }
+
+        /* Blog List */
+        .blog-list-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px;
+            background: var(--bg);
+            border-radius: var(--radius);
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .blog-list-item img {
+            width: 80px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .blog-list-info {
+            flex: 1;
+        }
+
+        .blog-list-info h4 {
+            font-size: 0.95rem;
+            margin-bottom: 4px;
+        }
+
+        .blog-list-info p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-family: var(--font-th);
+        }
+
+        .blog-list-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* Image Grid */
+        .image-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 16px;
+        }
+
+        .image-item {
+            position: relative;
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .image-item img {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .image-item .image-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .image-item:hover .image-overlay {
+            opacity: 1;
+        }
+
+        .image-overlay button {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: none;
+            font-size: 0.8rem;
+            cursor: pointer;
+        }
+
+        .copy-btn {
+            background: var(--accent);
+            color: white;
+        }
+
+        .delete-btn {
+            background: var(--danger);
+            color: white;
+        }
+
+        /* Upload Zone */
+        .upload-zone {
+            border: 2px dashed var(--border);
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 24px;
+        }
+
+        .upload-zone:hover {
+            border-color: var(--accent);
+            background: rgba(76, 175, 80, 0.05);
+        }
+
+        .upload-zone p {
+            color: var(--text-muted);
+            font-family: var(--font-th);
+        }
+
+        .upload-zone .icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        /* Site Image Position Cards */
+        .site-images-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+            gap: 20px;
+        }
+
+        .site-img-card {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: border-color 0.2s;
+        }
+
+        .site-img-card:hover {
+            border-color: var(--accent);
+        }
+
+        .site-img-preview {
+            position: relative;
+            height: 180px;
+            overflow: hidden;
+            background: #111;
+        }
+
+        .site-img-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .site-img-page-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            color: #fff;
+            font-size: 0.7rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-family: var(--font-th);
+        }
+
+        .site-img-info {
+            padding: 16px;
+        }
+
+        .site-img-label {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+            font-family: var(--font-th);
+        }
+
+        .site-img-section {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-family: var(--font-th);
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .site-img-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-change {
+            flex: 1;
+            padding: 9px 16px;
+            background: var(--accent);
+            color: white;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-family: var(--font-th);
+        }
+
+        .btn-change:hover {
+            background: var(--accent-hover);
+        }
+
+        .btn-url-edit {
+            padding: 9px 14px;
+            background: var(--surface-hover);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            border-radius: var(--radius);
+            font-size: 0.82rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-url-edit:hover {
+            border-color: var(--accent);
+            color: var(--text);
+        }
+
+        .img-section-divider {
+            grid-column: 1 / -1;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 0;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .img-section-divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        /* URL Edit Modal */
+        .url-modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 500;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .url-modal-overlay.active {
+            display: flex;
+        }
+
+        .url-modal {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .url-modal h3 {
+            margin-bottom: 16px;
+            font-family: var(--font-th);
+        }
+
+        .url-modal input {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            color: var(--text);
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+        }
+
+        .url-modal input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .url-modal-btns {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        /* SEO Preview */
+        .seo-preview {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-top: 16px;
+        }
+
+        .seo-preview-title {
+            color: #8AB4F8;
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+        }
+
+        .seo-preview-url {
+            color: #BDC1C6;
+            font-size: 0.8rem;
+            margin-bottom: 4px;
+        }
+
+        .seo-preview-desc {
+            color: #969BA1;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            font-family: var(--font-th);
+        }
+
+        /* Blog Editor */
+        .editor-wrap {
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            background: var(--bg);
+        }
+
+        .editor-tabs {
+            display: flex;
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .editor-tab {
+            padding: 10px 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .editor-tab.active {
+            color: var(--accent);
+            border-bottom-color: var(--accent);
+        }
+
+        .editor-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            padding: 8px 10px;
+            background: var(--card);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .editor-toolbar button {
+            padding: 6px 10px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text);
+            cursor: pointer;
+            font-size: 0.82rem;
+            transition: all 0.15s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .editor-toolbar button:hover {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
+
+        .editor-toolbar .tb-sep {
+            width: 1px;
+            background: var(--border);
+            margin: 0 4px;
+            border: none;
+            padding: 0;
+        }
+
+        .editor-toolbar .tb-sep:hover {
+            background: var(--border);
+            color: transparent;
+        }
+
+        .editor-textarea {
+            width: 100%;
+            min-height: 320px;
+            padding: 16px;
+            border: none;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Courier New', monospace;
+            font-size: 0.92rem;
+            line-height: 1.7;
+            resize: vertical;
+            outline: none;
+        }
+
+        .editor-preview {
+            display: none;
+            padding: 24px;
+            min-height: 320px;
+            font-family: var(--font-th);
+            line-height: 1.9;
+            color: var(--text);
+            overflow-y: auto;
+        }
+
+        .editor-preview h2 {
+            font-size: 1.4rem;
+            color: var(--text);
+            margin: 28px 0 12px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .editor-preview h3 {
+            font-size: 1.15rem;
+            color: var(--text);
+            margin: 20px 0 8px;
+        }
+
+        .editor-preview p {
+            color: var(--text-muted);
+            margin-bottom: 14px;
+            font-size: 0.95rem;
+        }
+
+        .editor-preview img {
+            max-width: 100%;
+            border-radius: var(--radius);
+            margin: 12px 0;
+        }
+
+        .editor-preview blockquote {
+            border-left: 3px solid var(--accent);
+            padding: 10px 16px;
+            margin: 16px 0;
+            background: rgba(99, 102, 241, 0.08);
+            border-radius: 0 var(--radius) var(--radius) 0;
+        }
+
+        .editor-preview strong {
+            color: var(--text);
+        }
+
+        /* Image Picker Modal */
+        .img-picker-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 9990;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .img-picker-overlay.active {
+            display: flex;
+        }
+
+        .img-picker {
+            background: var(--card);
+            border-radius: var(--radius);
+            width: 90%;
+            max-width: 720px;
+            max-height: 80vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .img-picker-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .img-picker-header h3 {
+            color: var(--text);
+            font-size: 1rem;
+        }
+
+        .img-picker-close {
+            background: none;
+            border: none;
+            font-size: 1.3rem;
+            cursor: pointer;
+            color: var(--text-muted);
+        }
+
+        .img-picker-body {
+            padding: 16px 20px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .img-picker-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .img-picker-actions button,
+        .img-picker-actions label {
+            padding: 8px 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--bg);
+            color: var(--text);
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: all 0.15s;
+        }
+
+        .img-picker-actions button:hover,
+        .img-picker-actions label:hover {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
+
+        .img-picker-url-row {
+            display: none;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .img-picker-url-row.active {
+            display: flex;
+        }
+
+        .img-picker-url-row input {
+            flex: 1;
+            padding: 10px 14px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 0.9rem;
+        }
+
+        .img-picker-url-row input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .img-picker-url-row button {
+            padding: 10px 16px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .img-picker-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 10px;
+        }
+
+        .img-picker-item {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+            aspect-ratio: 4/3;
+        }
+
+        .img-picker-item:hover {
+            border-color: var(--accent);
+            transform: scale(1.03);
+        }
+
+        .img-picker-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .img-picker-empty {
+            text-align: center;
+            padding: 24px;
+            color: var(--text-muted);
+            font-family: var(--font-th);
+            font-size: 0.9rem;
+        }
+
+        .img-picker-alt {
+            display: none;
+            gap: 8px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        .img-picker-alt.active {
+            display: flex;
+        }
+
+        .img-picker-alt input {
+            flex: 1;
+            padding: 10px 14px;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 0.9rem;
+        }
+
+        .img-picker-alt input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .img-picker-alt button {
+            padding: 10px 16px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+
+            .dash-content {
+                padding: 20px;
+            }
+
+            .form-row-inline {
+                grid-template-columns: 1fr;
+            }
+
+            .dash-header {
+                padding: 12px 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Login Screen -->
+    <div class="login-screen" id="login-screen">
+        <div class="login-box">
+            <h1>🏠 Admin</h1>
+            <p>Suthep Gate Hostel — Dashboard</p>
+            <input type="password" id="login-password" placeholder="Enter admin password" autofocus>
+            <button onclick="doLogin()">Login</button>
+            <div class="login-error" id="login-error">รหัสผ่านไม่ถูกต้อง</div>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div class="dashboard" id="dashboard">
+        <header class="dash-header">
+            <h2>🏠 Suthep Gate — Admin</h2>
+            <div class="user-info">
+                <span style="font-size: 0.85rem; color: var(--text-muted);">Admin</span>
+                <button class="logout-btn" onclick="doLogout()">Logout</button>
+            </div>
+        </header>
+
+        <div class="dash-layout">
+            <!-- Sidebar -->
+            <nav class="sidebar">
+                <div class="sidebar-nav">
+                    <a href="#" data-tab="seo" class="active">🔍 SEO Settings</a>
+                    <a href="#" data-tab="content">📝 Content</a>
+                    <a href="#" data-tab="blog">📰 Blog</a>
+                    <a href="#" data-tab="images">🖼️ Images</a>
+                    <a href="#" data-tab="booking">📅 Booking</a>
+                </div>
+            </nav>
+
+            <!-- Content -->
+            <div class="dash-content">
+
+                <!-- TAB: SEO Settings -->
+                <div class="tab-panel active" id="tab-seo">
+                    <h2 class="panel-title">🔍 SEO Settings</h2>
+                    <p class="panel-subtitle">จัดการ Title, Description, Keywords แต่ละหน้า</p>
+
+                    <div id="seo-pages-container"></div>
+
+                    <button class="btn-save" onclick="saveSEO()" style="margin-top: 16px;">💾 Save SEO Settings</button>
+                </div>
+
+                <!-- TAB: Content -->
+                <div class="tab-panel" id="tab-content">
+                    <h2 class="panel-title">📝 Content Manager</h2>
+                    <p class="panel-subtitle">แก้ไขเนื้อหาบนเว็บไซต์</p>
+
+                    <div class="card">
+                        <h3>🏠 Hero Section</h3>
+                        <div class="form-row">
+                            <label>Title (English)</label>
+                            <input type="text" id="hero-title-input" placeholder="Your Peaceful Escape in Chiang Mai">
+                        </div>
+                        <div class="form-row">
+                            <label>Subtitle (Thai)</label>
+                            <textarea id="hero-subtitle-input"
+                                placeholder="สัมผัสเสน่ห์เมืองเก่าเชียงใหม่..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>ℹ️ About Section</h3>
+                        <div class="form-row">
+                            <label>Title</label>
+                            <input type="text" id="about-title-input">
+                        </div>
+                        <div class="form-row">
+                            <label>Description (Thai)</label>
+                            <textarea id="about-desc-input"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>📊 Statistics</h3>
+                        <div id="stats-editor"></div>
+                    </div>
+
+                    <button class="btn-save" onclick="saveContent()">💾 Save Content</button>
+                </div>
+
+                <!-- TAB: Blog -->
+                <div class="tab-panel" id="tab-blog">
+                    <h2 class="panel-title">📰 Blog Manager</h2>
+                    <p class="panel-subtitle">จัดการบทความบล็อก</p>
+
+                    <div class="card">
+                        <h3>✍️ New Post</h3>
+                        <div class="form-row">
+                            <label>Title</label>
+                            <input type="text" id="blog-new-title" placeholder="ชื่อบทความ">
+                        </div>
+                        <div class="form-row-inline">
+                            <div class="form-row">
+                                <label>Title (English)</label>
+                                <input type="text" id="blog-new-title-en" placeholder="English Title">
+                            </div>
+                            <div class="form-row">
+                                <label>Slug</label>
+                                <input type="text" id="blog-new-slug" placeholder="url-friendly-slug">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <label>Image URL</label>
+                            <input type="text" id="blog-new-image" placeholder="https://... or /uploads/...">
+                        </div>
+                        <div class="form-row">
+                            <label>Excerpt (สรุปย่อ)</label>
+                            <textarea id="blog-new-excerpt" placeholder="สรุปเนื้อหาสั้นๆ"></textarea>
+                        </div>
+                        <div class="form-row">
+                            <label>Content (เนื้อหาเต็ม)</label>
+                            <div class="editor-wrap">
+                                <div class="editor-tabs">
+                                    <button class="editor-tab active" onclick="switchEditorTab('write')">✏️
+                                        เขียน</button>
+                                    <button class="editor-tab" onclick="switchEditorTab('preview')">👁️ Preview</button>
+                                </div>
+                                <div class="editor-toolbar" id="editor-toolbar">
+                                    <button type="button" onclick="insertMd('h2')" title="Heading 2">H2</button>
+                                    <button type="button" onclick="insertMd('h3')" title="Heading 3">H3</button>
+                                    <span class="tb-sep"></span>
+                                    <button type="button" onclick="insertMd('bold')" title="Bold"><b>B</b></button>
+                                    <button type="button" onclick="insertMd('italic')" title="Italic"><i>I</i></button>
+                                    <span class="tb-sep"></span>
+                                    <button type="button" onclick="openImagePicker()" title="แทรกรูปภาพ">🖼️
+                                        รูปภาพ</button>
+                                    <button type="button" onclick="insertMd('link')" title="Link">🔗 ลิงก์</button>
+                                    <span class="tb-sep"></span>
+                                    <button type="button" onclick="insertMd('quote')" title="Quote">❝ Quote</button>
+                                    <button type="button" onclick="insertMd('hr')" title="Divider">— เส้นคั่น</button>
+                                    <button type="button" onclick="insertMd('list')" title="List">• รายการ</button>
+                                </div>
+                                <textarea id="blog-new-content" class="editor-textarea" placeholder="เขียนเนื้อหาบทความที่นี่...
+
+ใช้ Markdown ได้:
+## หัวข้อใหญ่
+### หัวข้อย่อย
+**ตัวหนา**
+*ตัวเอียง*
+
+แทรกรูปภาพ: กดปุ่ม 🖼️ รูปภาพ ด้านบน"></textarea>
+                                <div class="editor-preview" id="editor-preview"></div>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <label>Tags (คั่นด้วยเครื่องหมายจุลภาค)</label>
+                            <input type="text" id="blog-new-tags" placeholder="เที่ยวเชียงใหม่, travel, chiang mai">
+                        </div>
+                        <button class="btn-save" onclick="createBlogPost()">➕ Create Post</button>
+                    </div>
+
+                    <div class="card">
+                        <h3>📋 All Posts</h3>
+                        <div id="blog-list"></div>
+                    </div>
+                </div>
+
+                <!-- TAB: Images -->
+                <div class="tab-panel" id="tab-images">
+                    <h2 class="panel-title">🖼️ Image Manager</h2>
+                    <p class="panel-subtitle">ดูว่ารูปแต่ละรูปแสดงตรงไหนของเว็บ แล้วกดเปลี่ยนได้เลย</p>
+
+                    <div id="site-images-container"></div>
+
+                    <div style="margin-top: 40px;">
+                        <h3 style="margin-bottom: 16px;">📁 อัพโหลดรูปทั่วไป</h3>
+                        <p
+                            style="font-size: 0.85rem; color: var(--text-muted); font-family: var(--font-th); margin-bottom: 16px;">
+                            อัพโหลดรูปไว้ใช้ในบล็อกหรือส่วนอื่นๆ</p>
+                        <div class="upload-zone" id="upload-zone"
+                            onclick="document.getElementById('file-input').click()">
+                            <div class="icon">📤</div>
+                            <p>คลิกเพื่ออัพโหลดรูปภาพ หรือลากไฟล์มาวาง</p>
+                            <p style="font-size: 0.8rem; margin-top: 8px;">Max 5MB | JPG, PNG, GIF, WEBP</p>
+                        </div>
+                        <input type="file" id="file-input" accept="image/*" style="display:none"
+                            onchange="uploadImage(this)">
+
+                        <div class="card">
+                            <h3>📁 Uploaded Images</h3>
+                            <div class="image-grid" id="image-grid"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hidden file input for site image replacements -->
+                <input type="file" id="site-img-file-input" accept="image/*" style="display:none">
+
+                <!-- URL Edit Modal -->
+                <div class="url-modal-overlay" id="url-modal-overlay">
+                    <div class="url-modal">
+                        <h3 id="url-modal-title">✏️ แก้ไข URL รูปภาพ</h3>
+                        <input type="text" id="url-modal-input" placeholder="https://... หรือ /uploads/...">
+                        <div class="url-modal-btns">
+                            <button class="btn-secondary" onclick="closeUrlModal()">ยกเลิก</button>
+                            <button class="btn-save" onclick="saveUrlModal()">💾 บันทึก</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB: Booking -->
+                <!-- Image Picker Modal (for blog editor) -->
+                <div class="img-picker-overlay" id="img-picker-overlay">
+                    <div class="img-picker">
+                        <div class="img-picker-header">
+                            <h3>🖼️ เลือกรูปภาพ</h3>
+                            <button class="img-picker-close" onclick="closeImagePicker()">✕</button>
+                        </div>
+                        <div class="img-picker-body">
+                            <div class="img-picker-actions">
+                                <button onclick="uploadPickerImage()">📤 อัพโหลดรูปใหม่</button>
+                                <button onclick="togglePickerUrl()">🔗 วาง URL</button>
+                            </div>
+                            <div class="img-picker-url-row" id="img-picker-url-row">
+                                <input type="text" id="img-picker-url-input" placeholder="https://... วาง URL รูปภาพ">
+                                <button onclick="insertPickerUrl()">ใช้ URL นี้</button>
+                            </div>
+                            <div class="img-picker-grid" id="img-picker-grid"></div>
+                            <div class="img-picker-alt" id="img-picker-alt-row">
+                                <input type="text" id="img-picker-alt-input" placeholder="คำอธิบายรูปภาพ (Alt text)">
+                                <button onclick="confirmPickerImage()">✅ แทรกรูป</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <input type="file" id="img-picker-file" accept="image/*" style="display:none">
+                <div class="tab-panel" id="tab-booking">
+                    <h2 class="panel-title">📅 Booking Settings</h2>
+                    <p class="panel-subtitle">ตั้งค่า URL สำหรับปุ่มจอง</p>
+
+                    <div class="card">
+                        <h3>🔗 Booking Platform URL</h3>
+                        <p
+                            style="color: var(--text-muted); font-size: 0.85rem; font-family: var(--font-th); margin-bottom: 16px;">
+                            ใส่ URL ของแพลตฟอร์มจองภายนอก เช่น Cloudbeds, Booking.com เมื่อแขกกดปุ่ม "Book Now"
+                            จะถูกพาไปยัง URL นี้
+                        </p>
+                        <div class="form-row">
+                            <label>Booking URL</label>
+                            <input type="url" id="booking-url-input"
+                                placeholder="https://hotels.cloudbeds.com/reservation/xxxxx">
+                        </div>
+                        <button class="btn-save" onclick="saveBookingUrl()">💾 Save Booking URL</button>
+
+                        <div
+                            style="margin-top: 20px; padding: 16px; background: var(--bg); border-radius: var(--radius); border: 1px solid var(--border);">
+                            <p style="font-size: 0.85rem; color: var(--text-muted); font-family: var(--font-th);">
+                                💡 <strong>แนะนำ:</strong> ลงทะเบียนกับ <a href="https://www.cloudbeds.com"
+                                    target="_blank" style="color: var(--accent);">Cloudbeds</a>
+                                หรือ <a href="https://join.booking.com" target="_blank"
+                                    style="color: var(--accent);">Booking.com</a>
+                                แล้วนำ URL ของหน้าจองมาวางที่นี่
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        let adminToken = '';
+        let contentData = {};
+        let seoData = {};
+
+        // --- Login ---
+        document.getElementById('login-password').addEventListener('keypress', e => {
+            if (e.key === 'Enter') doLogin();
+        });
+
+        async function doLogin() {
+            const password = document.getElementById('login-password').value;
+            try {
+                const res = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    adminToken = data.token;
+                    document.getElementById('login-screen').style.display = 'none';
+                    document.getElementById('dashboard').style.display = 'block';
+                    loadAllData();
+                } else {
+                    document.getElementById('login-error').style.display = 'block';
+                }
+            } catch (err) {
+                showToast('ไม่สามารถเชื่อมต่อ server ได้', 'error');
+            }
+        }
+
+        function doLogout() {
+            adminToken = '';
+            document.getElementById('login-screen').style.display = '';
+            document.getElementById('dashboard').style.display = 'none';
+            document.getElementById('login-password').value = '';
+        }
+
+        // --- Tab Navigation ---
+        document.querySelectorAll('.sidebar-nav a').forEach(a => {
+            a.addEventListener('click', e => {
+                e.preventDefault();
+                const tab = a.dataset.tab;
+                document.querySelectorAll('.sidebar-nav a').forEach(x => x.classList.remove('active'));
+                a.classList.add('active');
+                document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+                document.getElementById('tab-' + tab).classList.add('active');
+            });
+        });
+
+        // --- Toast ---
+        function showToast(msg, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.className = 'toast ' + type + ' show';
+            setTimeout(() => { toast.classList.remove('show'); }, 3000);
+        }
+
+        // --- API Helper ---
+        async function api(url, method = 'GET', body = null) {
+            const opts = {
+                method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Admin-Token': adminToken
+                }
+            };
+            if (body) opts.body = JSON.stringify(body);
+            const res = await fetch(url, opts);
+            return res.json();
+        }
+
+        // --- Load All Data ---
+        async function loadAllData() {
+            await Promise.all([
+                loadContent(),
+                loadSEO(),
+                loadBlog(),
+                loadImages()
+            ]);
+        }
+
+        // --- Content ---
+        async function loadContent() {
+            contentData = await api('/api/content');
+
+            // Hero
+            document.getElementById('hero-title-input').value = contentData.hero?.title || '';
+            document.getElementById('hero-subtitle-input').value = contentData.hero?.subtitle || '';
+
+            // About
+            document.getElementById('about-title-input').value = contentData.about?.title || '';
+            document.getElementById('about-desc-input').value = contentData.about?.description || '';
+
+            // Stats
+            renderStatsEditor(contentData.stats || []);
+
+            // Booking URL
+            document.getElementById('booking-url-input').value = contentData.bookingUrl || '';
+
+            // Site Images
+            renderSiteImages(contentData.siteImages || {});
+        }
+
+        function renderStatsEditor(stats) {
+            const container = document.getElementById('stats-editor');
+            container.innerHTML = stats.map((s, i) => `
+        <div class="form-row-inline" style="margin-bottom: 12px;">
+          <div class="form-row">
+            <label>Number</label>
+            <input type="number" id="stat-num-${i}" value="${s.number}" step="0.1">
+          </div>
+          <div class="form-row">
+            <label>Suffix</label>
+            <input type="text" id="stat-suffix-${i}" value="${s.suffix}">
+          </div>
+          <div class="form-row">
+            <label>Label</label>
+            <input type="text" id="stat-label-${i}" value="${s.label}">
+          </div>
+        </div>
+      `).join('');
+        }
+
+        async function saveContent() {
+            contentData.hero = {
+                title: document.getElementById('hero-title-input').value,
+                subtitle: document.getElementById('hero-subtitle-input').value,
+                cta: 'Book Now'
+            };
+            contentData.about = {
+                ...contentData.about,
+                title: document.getElementById('about-title-input').value,
+                description: document.getElementById('about-desc-input').value
+            };
+
+            const stats = [];
+            for (let i = 0; i < (contentData.stats || []).length; i++) {
+                const numEl = document.getElementById('stat-num-' + i);
+                if (!numEl) break;
+                stats.push({
+                    number: parseFloat(numEl.value),
+                    suffix: document.getElementById('stat-suffix-' + i).value,
+                    label: document.getElementById('stat-label-' + i).value
+                });
+            }
+            contentData.stats = stats;
+
+            await api('/api/content', 'PUT', contentData);
+            showToast('บันทึกเนื้อหาเรียบร้อย ✅');
+        }
+
+        // --- SEO ---
+        async function loadSEO() {
+            seoData = await api('/api/seo');
+            renderSEOEditor(seoData);
+        }
+
+        function renderSEOEditor(seo) {
+            const pages = ['index', 'rooms', 'blog', 'about', 'contact'];
+            const labels = {
+                index: '🏠 Homepage',
+                rooms: '🛏️ Rooms',
+                blog: '📰 Blog',
+                about: 'ℹ️ About',
+                contact: '📞 Contact'
+            };
+
+            const container = document.getElementById('seo-pages-container');
+            container.innerHTML = pages.map(page => {
+                const p = seo[page] || {};
+                return `
+          <div class="card">
+            <h3>${labels[page]}</h3>
+            <div class="form-row">
+              <label>Title Tag</label>
+              <input type="text" id="seo-title-${page}" value="${p.title || ''}" placeholder="Page Title | Suthep Gate Hostel">
+            </div>
+            <div class="form-row">
+              <label>Meta Description</label>
+              <textarea id="seo-desc-${page}" placeholder="คำอธิบายเกี่ยวกับหน้านี้ ...">${p.description || ''}</textarea>
+            </div>
+            <div class="form-row">
+              <label>Keywords (คั่นด้วย comma)</label>
+              <input type="text" id="seo-keywords-${page}" value="${p.keywords || ''}" placeholder="keyword1, keyword2, keyword3">
+            </div>
+            <div class="seo-preview">
+              <div class="seo-preview-title" id="seo-prev-title-${page}">${p.title || 'Page Title'}</div>
+              <div class="seo-preview-url">suthepgatehostel.com/${page === 'index' ? '' : page}</div>
+              <div class="seo-preview-desc" id="seo-prev-desc-${page}">${p.description || 'Page description...'}</div>
+            </div>
+          </div>
+        `;
+            }).join('');
+
+            // Live preview
+            pages.forEach(page => {
+                const titleInput = document.getElementById('seo-title-' + page);
+                const descInput = document.getElementById('seo-desc-' + page);
+                if (titleInput) {
+                    titleInput.addEventListener('input', () => {
+                        document.getElementById('seo-prev-title-' + page).textContent = titleInput.value || 'Page Title';
+                    });
+                }
+                if (descInput) {
+                    descInput.addEventListener('input', () => {
+                        document.getElementById('seo-prev-desc-' + page).textContent = descInput.value || 'Page description...';
+                    });
+                }
+            });
+        }
+
+        async function saveSEO() {
+            const pages = ['index', 'rooms', 'blog', 'about', 'contact'];
+            const newSeo = {};
+            pages.forEach(page => {
+                newSeo[page] = {
+                    title: document.getElementById('seo-title-' + page)?.value || '',
+                    description: document.getElementById('seo-desc-' + page)?.value || '',
+                    keywords: document.getElementById('seo-keywords-' + page)?.value || ''
+                };
+            });
+            await api('/api/seo', 'PUT', newSeo);
+            showToast('บันทึก SEO Settings เรียบร้อย ✅');
+        }
+
+        // --- Blog ---
+        async function loadBlog() {
+            const data = await api('/api/blog');
+            renderBlogList(data.posts || []);
+        }
+
+        function renderBlogList(posts) {
+            const container = document.getElementById('blog-list');
+            if (!posts.length) {
+                container.innerHTML = '<p style="color: var(--text-muted); font-family: var(--font-th);">ยังไม่มีบทความ</p>';
+                return;
+            }
+            container.innerHTML = posts.map(post => `
+        <div class="blog-list-item">
+          <img src="${post.image || 'https://via.placeholder.com/80x60'}" alt="${post.title}">
+          <div class="blog-list-info">
+            <h4>${post.title}</h4>
+            <p>${post.date} · ${(post.tags || []).join(', ')}</p>
+          </div>
+          <div class="blog-list-actions">
+            <button class="btn-danger" onclick="deleteBlogPost('${post.id}')">🗑️ Delete</button>
+          </div>
+        </div>
+      `).join('');
+        }
+
+        async function createBlogPost() {
+            const title = document.getElementById('blog-new-title').value;
+            if (!title) return showToast('กรุณากรอกชื่อบทความ', 'error');
+
+            const post = {
+                title,
+                titleEn: document.getElementById('blog-new-title-en').value,
+                slug: document.getElementById('blog-new-slug').value || title.toLowerCase().replace(/\s+/g, '-'),
+                image: document.getElementById('blog-new-image').value,
+                excerpt: document.getElementById('blog-new-excerpt').value,
+                content: document.getElementById('blog-new-content').value,
+                tags: document.getElementById('blog-new-tags').value.split(',').map(t => t.trim()).filter(Boolean),
+                author: 'Suthep Gate Team'
+            };
+
+            await api('/api/blog', 'POST', post);
+            showToast('สร้างบทความเรียบร้อย ✅');
+
+            // Clear form
+            ['blog-new-title', 'blog-new-title-en', 'blog-new-slug', 'blog-new-image', 'blog-new-excerpt', 'blog-new-content', 'blog-new-tags']
+                .forEach(id => document.getElementById(id).value = '');
+
+            loadBlog();
+        }
+
+        async function deleteBlogPost(id) {
+            if (!confirm('ต้องการลบบทความนี้ใช่ไหม?')) return;
+            await api('/api/blog/' + id, 'DELETE');
+            showToast('ลบบทความเรียบร้อย ✅');
+            loadBlog();
+        }
+
+        // --- Blog Editor (Toolbar + Preview + Image Picker) ---
+        function switchEditorTab(tab) {
+            const textarea = document.getElementById('blog-new-content');
+            const preview = document.getElementById('editor-preview');
+            const toolbar = document.getElementById('editor-toolbar');
+            const tabs = document.querySelectorAll('.editor-tab');
+
+            if (tab === 'preview') {
+                textarea.style.display = 'none';
+                toolbar.style.display = 'none';
+                preview.style.display = 'block';
+                preview.innerHTML = editorRenderMarkdown(textarea.value);
+                tabs[0].classList.remove('active');
+                tabs[1].classList.add('active');
+            } else {
+                textarea.style.display = 'block';
+                toolbar.style.display = 'flex';
+                preview.style.display = 'none';
+                tabs[0].classList.add('active');
+                tabs[1].classList.remove('active');
+            }
+        }
+
+        function editorRenderMarkdown(text) {
+            if (!text) return '<p style="color:var(--text-muted); font-family:var(--font-th);">ยังไม่มีเนื้อหา — กลับไปแท็บ "เขียน" เพื่อเริ่มเขียน</p>';
+            return text
+                .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+                .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+                .replace(/^# (.+)$/gm, '<h2>$1</h2>')
+                .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.+?)\*/g, '<em>$1</em>')
+                .replace(/!\[(.+?)\]\((.+?)\)/g, '<img src="$2" alt="$1" loading="lazy" style="max-width:100%;border-radius:8px;margin:12px 0;">')
+                .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" target="_blank" style="color:var(--accent);">$1</a>')
+                .replace(/^---$/gm, '<hr style="border:none;border-top:1px solid var(--border);margin:20px 0;">')
+                .replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>')
+                .replace(/^- (.+)$/gm, '<li>$1</li>')
+                .split('\n\n')
+                .map(block => {
+                    block = block.trim();
+                    if (!block) return '';
+                    if (block.startsWith('<h') || block.startsWith('<img') || block.startsWith('<hr') || block.startsWith('<blockquote') || block.startsWith('<li')) return block;
+                    return `<p>${block.replace(/\n/g, '<br>')}</p>`;
+                })
+                .join('\n');
+        }
+
+        function insertMd(type) {
+            const textarea = document.getElementById('blog-new-content');
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const selected = textarea.value.substring(start, end);
+            let insert = '';
+
+            switch (type) {
+                case 'h2': insert = `\n## ${selected || 'หัวข้อใหญ่'}\n`; break;
+                case 'h3': insert = `\n### ${selected || 'หัวข้อย่อย'}\n`; break;
+                case 'bold': insert = `**${selected || 'ตัวหนา'}**`; break;
+                case 'italic': insert = `*${selected || 'ตัวเอียง'}*`; break;
+                case 'link': insert = `[${selected || 'ข้อความ'}](https://)`; break;
+                case 'quote': insert = `\n> ${selected || 'ข้อความ quote'}\n`; break;
+                case 'hr': insert = `\n---\n`; break;
+                case 'list': insert = `\n- ${selected || 'รายการ 1'}\n- รายการ 2\n- รายการ 3\n`; break;
+            }
+
+            textarea.value = textarea.value.substring(0, start) + insert + textarea.value.substring(end);
+            textarea.focus();
+            const newPos = start + insert.length;
+            textarea.setSelectionRange(newPos, newPos);
+        }
+
+        function insertImageMarkdown(url, alt) {
+            const textarea = document.getElementById('blog-new-content');
+            const pos = textarea.selectionStart;
+            const text = `\n![${alt || 'รูปภาพ'}](${url})\n`;
+            textarea.value = textarea.value.substring(0, pos) + text + textarea.value.substring(pos);
+            textarea.focus();
+            const newPos = pos + text.length;
+            textarea.setSelectionRange(newPos, newPos);
+            closeImagePicker();
+            showToast('แทรกรูปภาพลงในเนื้อหาแล้ว ✅');
+        }
+
+        // Image Picker
+        async function openImagePicker() {
+            const overlay = document.getElementById('img-picker-overlay');
+            overlay.classList.add('active');
+            // Load uploaded images
+            await loadPickerImages();
+        }
+
+        function closeImagePicker() {
+            document.getElementById('img-picker-overlay').classList.remove('active');
+            document.getElementById('img-picker-url-row').classList.remove('active');
+            document.getElementById('img-picker-alt-row').classList.remove('active');
+        }
+
+        async function loadPickerImages() {
+            const grid = document.getElementById('img-picker-grid');
+            try {
+                const res = await fetch('/api/images', { headers: { 'X-Admin-Token': adminToken } });
+                const data = await res.json();
+                const images = data.images || [];
+                if (!images.length) {
+                    grid.innerHTML = '<div class="img-picker-empty">ยังไม่มีรูปที่อัพโหลด — ลองอัพโหลดรูปใหม่หรือใส่ URL</div>';
+                    return;
+                }
+                grid.innerHTML = images.map(img => `
+                    <div class="img-picker-item" onclick="selectPickerImage('${img.url}')" title="${img.filename}">
+                        <img src="${img.url}" alt="${img.filename}" loading="lazy">
+                    </div>
+                `).join('');
+            } catch (e) {
+                grid.innerHTML = '<div class="img-picker-empty">ไม่สามารถโหลดรูปได้</div>';
+            }
+        }
+
+        let pickerSelectedUrl = '';
+
+        function selectPickerImage(url) {
+            pickerSelectedUrl = url;
+            document.getElementById('img-picker-alt-row').classList.add('active');
+            document.getElementById('img-picker-alt-input').value = '';
+            document.getElementById('img-picker-alt-input').focus();
+        }
+
+        function confirmPickerImage() {
+            const alt = document.getElementById('img-picker-alt-input').value || 'รูปภาพ';
+            insertImageMarkdown(pickerSelectedUrl, alt);
+        }
+
+        function togglePickerUrl() {
+            const row = document.getElementById('img-picker-url-row');
+            row.classList.toggle('active');
+            if (row.classList.contains('active')) {
+                document.getElementById('img-picker-url-input').focus();
+            }
+        }
+
+        function insertPickerUrl() {
+            const url = document.getElementById('img-picker-url-input').value;
+            if (!url) return;
+            pickerSelectedUrl = url;
+            document.getElementById('img-picker-alt-row').classList.add('active');
+            document.getElementById('img-picker-alt-input').focus();
+        }
+
+        async function uploadPickerImage() {
+            const input = document.getElementById('img-picker-file');
+            input.click();
+        }
+
+        // Hook the hidden input
+        document.addEventListener('DOMContentLoaded', () => {
+            const input = document.getElementById('img-picker-file');
+            if (input) {
+                input.addEventListener('change', async function () {
+                    if (!this.files[0]) return;
+                    const formData = new FormData();
+                    formData.append('image', this.files[0]);
+                    try {
+                        const res = await fetch('/api/upload', {
+                            method: 'POST',
+                            headers: { 'X-Admin-Token': adminToken },
+                            body: formData
+                        });
+                        const data = await res.json();
+                        if (data.url) {
+                            showToast('อัพโหลดรูปสำเร็จ ✅');
+                            await loadPickerImages();
+                            selectPickerImage(data.url);
+                        }
+                    } catch (e) {
+                        showToast('อัพโหลดรูปไม่สำเร็จ', 'error');
+                    }
+                    this.value = '';
+                });
+            }
+        });
+
+        // --- Site Images (Position-based) ---
+        function renderSiteImages(siteImages) {
+            const container = document.getElementById('site-images-container');
+            if (!siteImages || !Object.keys(siteImages).length) {
+                container.innerHTML = '<p style="color: var(--text-muted); font-family: var(--font-th);">ไม่มีข้อมูลรูปภาพ</p>';
+                return;
+            }
+
+            // Group by page
+            const groups = {
+                '🏠 หน้าแรก — Hero': ['hero'],
+                '📖 หน้าแรก — About': ['about'],
+                '🛏️ ห้องพัก': ['roomDorm', 'roomPrivate', 'roomDeluxe'],
+                '🖼️ แกลเลอรี่ (Gallery)': ['gallery1', 'gallery2', 'gallery3', 'gallery4', 'gallery5'],
+                '📖 About Page': ['aboutPage'],
+                '📰 Blog': ['blog1', 'blog2', 'blog3']
+            };
+
+            let html = '<div class="site-images-grid">';
+            for (const [groupLabel, keys] of Object.entries(groups)) {
+                html += `<div class="img-section-divider">${groupLabel}</div>`;
+                for (const key of keys) {
+                    const img = siteImages[key];
+                    if (!img) continue;
+                    html += `
+                    <div class="site-img-card" id="site-img-card-${key}">
+                        <div class="site-img-preview">
+                            <img src="${img.url}" alt="${img.label}" onerror="this.src='https://via.placeholder.com/400x180?text=No+Image'">
+                            <div class="site-img-page-badge">📄 ${img.page}</div>
+                        </div>
+                        <div class="site-img-info">
+                            <div class="site-img-label">${img.label}</div>
+                            <div class="site-img-section">${img.section}</div>
+                            <div class="site-img-actions">
+                                <button class="btn-change" onclick="changeSiteImage('${key}')">📷 เปลี่ยนรูป</button>
+                                <button class="btn-url-edit" onclick="openUrlModal('${key}')" title="แก้ไข URL">🔗 URL</button>
+                            </div>
+                        </div>
+                    </div>`;
+                }
+            }
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        // Change site image by uploading a file
+        let pendingSiteImageKey = null;
+        const siteImgInput = document.getElementById('site-img-file-input');
+
+        function changeSiteImage(key) {
+            pendingSiteImageKey = key;
+            siteImgInput.click();
+        }
+
+        siteImgInput.addEventListener('change', async function () {
+            if (!this.files[0] || !pendingSiteImageKey) return;
+            const file = this.files[0];
+            const formData = new FormData();
+            formData.append('image', file);
+
+            try {
+                const res = await fetch('/api/upload', {
+                    method: 'POST',
+                    headers: { 'X-Admin-Token': adminToken },
+                    body: formData
+                });
+                const data = await res.json();
+                if (data.success) {
+                    // Update the siteImages with new URL
+                    await api('/api/site-images/' + pendingSiteImageKey, 'PUT', { url: data.url });
+                    showToast('เปลี่ยนรูปเรียบร้อย ✅');
+                    await loadContent();
+                    loadImages();
+                } else {
+                    showToast(data.error || 'Upload failed', 'error');
+                }
+            } catch (err) {
+                showToast('เกิดข้อผิดพลาด', 'error');
+            }
+            this.value = '';
+            pendingSiteImageKey = null;
+        });
+
+        // URL Edit Modal
+        let urlModalKey = null;
+
+        function openUrlModal(key) {
+            urlModalKey = key;
+            const img = contentData.siteImages?.[key];
+            document.getElementById('url-modal-title').textContent = '✏️ แก้ไข URL: ' + (img?.label || key);
+            document.getElementById('url-modal-input').value = img?.url || '';
+            document.getElementById('url-modal-overlay').classList.add('active');
+        }
+
+        function closeUrlModal() {
+            document.getElementById('url-modal-overlay').classList.remove('active');
+            urlModalKey = null;
+        }
+
+        async function saveUrlModal() {
+            if (!urlModalKey) return;
+            const url = document.getElementById('url-modal-input').value;
+            if (!url) return showToast('กรุณากรอก URL', 'error');
+            await api('/api/site-images/' + urlModalKey, 'PUT', { url });
+            showToast('อัปเดต URL เรียบร้อย ✅');
+            closeUrlModal();
+            await loadContent();
+        }
+
+        document.getElementById('url-modal-overlay').addEventListener('click', function (e) {
+            if (e.target === this) closeUrlModal();
+        });
+
+        // --- Generic Uploaded Images ---
+        async function loadImages() {
+            const data = await api('/api/images');
+            renderImageGrid(data.images || []);
+        }
+
+        function renderImageGrid(images) {
+            const container = document.getElementById('image-grid');
+            if (!images.length) {
+                container.innerHTML = '<p style="color: var(--text-muted); font-family: var(--font-th); grid-column: 1/-1;">ยังไม่มีรูปภาพ</p>';
+                return;
+            }
+            container.innerHTML = images.map(img => `
+        <div class="image-item">
+          <img src="${img.url}" alt="${img.filename}">
+          <div class="image-overlay">
+            <button class="copy-btn" onclick="copyUrl('${img.url}')">📋 Copy</button>
+            <button class="delete-btn" onclick="deleteImage('${img.filename}')">🗑️</button>
+          </div>
+        </div>
+      `).join('');
+        }
+
+        async function uploadImage(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('image', file);
+
+            try {
+                const res = await fetch('/api/upload', {
+                    method: 'POST',
+                    headers: { 'X-Admin-Token': adminToken },
+                    body: formData
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast('อัพโหลดรูปภาพเรียบร้อย ✅');
+                    loadImages();
+                } else {
+                    showToast(data.error || 'Upload failed', 'error');
+                }
+            } catch (err) {
+                showToast('Upload error', 'error');
+            }
+            input.value = '';
+        }
+
+        async function deleteImage(filename) {
+            if (!confirm('ต้องการลบรูปภาพนี้ใช่ไหม?')) return;
+            await api('/api/images/' + filename, 'DELETE');
+            showToast('ลบรูปภาพเรียบร้อย ✅');
+            loadImages();
+        }
+
+        function copyUrl(url) {
+            navigator.clipboard.writeText(window.location.origin + url);
+            showToast('คัดลอก URL เรียบร้อย 📋');
+        }
+
+        // --- Booking URL ---
+        async function saveBookingUrl() {
+            const url = document.getElementById('booking-url-input').value;
+            await api('/api/booking-url', 'PUT', { url });
+            showToast('บันทึก Booking URL เรียบร้อย ✅');
+        }
+
+        // --- Drag & Drop Upload ---
+        const uploadZone = document.getElementById('upload-zone');
+        if (uploadZone) {
+            uploadZone.addEventListener('dragover', e => { e.preventDefault(); uploadZone.style.borderColor = 'var(--accent)'; });
+            uploadZone.addEventListener('dragleave', () => { uploadZone.style.borderColor = ''; });
+            uploadZone.addEventListener('drop', e => {
+                e.preventDefault();
+                uploadZone.style.borderColor = '';
+                if (e.dataTransfer.files.length) {
+                    const input = document.getElementById('file-input');
+                    input.files = e.dataTransfer.files;
+                    uploadImage(input);
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
