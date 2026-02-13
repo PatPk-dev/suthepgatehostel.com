@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
 /* --- Load Dynamic Content from JSON --- */
 async function loadDynamicContent() {
   try {
-    const res = await fetch('/data/content.json');
+    const res = await fetch(`/data/content.json?t=${Date.now()}`);
     if (!res.ok) return;
     const data = await res.json();
     window.siteContent = data;
@@ -618,7 +618,7 @@ function applySiteImages(siteImages) {
 /* --- Blog loader (for blog page) --- */
 async function loadBlogPosts() {
   try {
-    const res = await fetch('/data/blog.json');
+    const res = await fetch(`/data/blog.json?t=${Date.now()}`);
     if (!res.ok) return;
     const data = await res.json();
 
