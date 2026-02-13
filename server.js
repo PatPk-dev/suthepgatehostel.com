@@ -55,21 +55,44 @@ const upload = multer({
     }
 });
 
-// --- Data helpers ---
+// --- Data helpers & In-Memory Cache (for Vercel support) ---
 const DATA_DIR = path.join(__dirname, 'data');
+const dataCache = {}; // Cache for temporary persistence in Vercel memory
 
 function readJSON(filename) {
+    // Return cached data if available (for Vercel serverless persistence within instance)
+    if (dataCache[filename]) {
+        return dataCache[filename];
+    }
+
     const filepath = path.join(DATA_DIR, filename);
     if (!fs.existsSync(filepath)) return null;
-    return JSON.parse(fs.readFileSync(filepath, 'utf8'));
+
+    try {
+        const data = JSON.parse(fs.readFileSync(filepath, 'utf8'));
+        dataCache[filename] = data; // Cache initial load
+        return data;
+    } catch (err) {
+        console.error(`Error reading ${filename}:`, err);
+        return null;
+    }
 }
 
 function writeJSON(filename, data) {
-    const filepath = path.join(DATA_DIR, filename);
-    if (!fs.existsSync(DATA_DIR)) {
-        fs.mkdirSync(DATA_DIR, { recursive: true });
+    // Update cache immediately
+    dataCache[filename] = data;
+
+    // Try to write to file (will fail on Vercel, but succeed locally)
+    try {
+        const filepath = path.join(DATA_DIR, filename);
+        if (!fs.existsSync(DATA_DIR)) {
+            fs.mkdirSync(DATA_DIR, { recursive: true });
+        }
+        fs.writeFileSync(filepath, JSON.stringify(data, null, 2), 'utf8');
+    } catch (err) {
+        console.warn(`Warning: Could not write to ${filename} (likely read-only fs on Vercel). Using in-memory cache.`);
+        // Do not throw error, let the API respond with success
     }
-    fs.writeFileSync(filepath, JSON.stringify(data, null, 2), 'utf8');
 }
 
 // --- Simple Auth (change this password!) ---
