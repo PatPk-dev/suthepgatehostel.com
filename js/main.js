@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initNavbar();
   initScrollReveal();
   initStatsCounter();
-  initReviewsCarousel();
+  // initReviewsCarousel(); // Disabled for new grid layout
   initMobileMenu();
   initBackToTop();
   initLightbox();
@@ -137,51 +137,41 @@ function renderStats(stats) {
 }
 
 /* --- Render Reviews --- */
-/* --- Render Reviews --- */
-/* --- Render Reviews --- */
 function renderReviews(reviews) {
   const container = document.getElementById('reviews-track');
   if (!container) return;
 
-  const getSourceLogo = (source) => {
-    if (!source) return '';
-    const src = source.toLowerCase();
+  // Clear any carousel styles
+  container.style.transform = '';
+  container.style.transition = '';
 
-    // Minimalist Logos for Card
-    if (src === 'google') {
-      return `<div class="source-icon google" title="Google"><span style="color:#4285F4">G</span></div>`;
+  // Star SVG path
+  const starPath = "M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z";
+
+  const getStars = (count) => {
+    let html = '';
+    for (let i = 0; i < count; i++) {
+      html += `<svg class="review-star-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" stroke="currentColor"><path d="${starPath}"></path></svg>`;
     }
-    if (src === 'booking') {
-      return `<div class="source-icon booking" title="Booking.com" style="color:#003580; font-weight:800; font-family:sans-serif;">B.</div>`;
-    }
-    if (src === 'agoda') {
-      return `<div class="source-icon agoda" title="Agoda" style="display:flex; gap:2px;"><div style="width:6px; height:6px; background:#9E9E9E; border-radius:50%"></div><div style="width:6px; height:6px; background:#FF5722; border-radius:50%"></div></div>`;
-    }
-    return `<div class="source-icon" style="font-size:0.8rem; font-weight:bold;">${source.charAt(0)}</div>`;
+    return html;
   };
 
   container.innerHTML = reviews.map(r => `
     <div class="review-card">
-      <div class="review-avatar-wrapper">
-         <div class="review-avatar">${r.name.charAt(0)}</div>
-      </div>
-      
-      <div class="review-source-corner">
-         ${getSourceLogo(r.source)}
-      </div>
-
-      <div class="review-content">
-        <div class="review-name">${r.name}</div>
-        <div class="review-role">${r.country || 'Guest'}</div>
-        <div class="review-stars">${'★'.repeat(r.rating)}</div>
-        
-        <div class="review-quote-mark">“</div>
-        <p class="review-text">${r.text}</p>
+      <p class="review-name">${r.name}</p>
+      <p class="review-text">"${r.text}"</p>
+      <div class="review-stars-container">
+        ${getStars(r.rating || 5)}
       </div>
     </div>
   `).join('');
 
-  initReviewsCarousel();
+  // Hide navigation buttons as we are now using a static grid
+  const nav = document.querySelector('.reviews-nav');
+  if (nav) nav.style.display = 'none';
+
+  // No carousel init
+  // initReviewsCarousel(); 
 }
 
 /* --- Render Facilities --- */
