@@ -21,6 +21,9 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+// Explicitly serve components folder
+app.use('/components', express.static(path.join(__dirname, 'components')));
+
 // --- Multer config for image uploads ---
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
