@@ -12,6 +12,8 @@ app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
+
+
 // Serve static files
 app.use(express.static(path.join(__dirname)));
 app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
@@ -54,10 +56,9 @@ const upload = multer({
         }
     }
 });
-
-// --- Data helpers & In-Memory Cache (for Vercel support) ---
+// --- Data helpers & In-Memory Cache (Moved up for priority serving) ---
 const DATA_DIR = path.join(__dirname, 'data');
-const dataCache = {}; // Cache for temporary persistence in Vercel memory
+const dataCache = {};
 
 function readJSON(filename) {
     // Return cached data if available (for Vercel serverless persistence within instance)
@@ -95,7 +96,22 @@ function writeJSON(filename, data) {
     }
 }
 
-// --- Simple Auth (change this password!) ---
+// --- Force dynamic data serving (Prevent Vercel static file caching) ---
+app.use(['/api', '/data'], (req, res, next) => {
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+    res.set('Pragma', 'no-cache');
+    res.set('Expires', '0');
+    next();
+});
+
+// Intercept JSON file requests to serve from Memory Cache (overrides static file)
+app.get('/data/content.json', (req, res) => {
+    res.json(readJSON('content.json') || {});
+});
+
+app.get('/data/blog.json', (req, res) => {
+    res.json(readJSON('blog.json') || { posts: [] });
+});// --- Simple Auth (change this password!) ---
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'suthepgate2026';
 
 function authMiddleware(req, res, next) {
@@ -232,16 +248,8 @@ app.delete('/api/images/:filename', authMiddleware, (req, res) => {
     }
 });
 
-// --- Serve data files for frontend ---
-app.get('/data/content.json', (req, res) => {
-    const content = readJSON('content.json');
-    res.json(content || {});
-});
 
-app.get('/data/blog.json', (req, res) => {
-    const data = readJSON('blog.json');
-    res.json(data || { posts: [] });
-});
+
 
 // --- Sitemap ---
 app.get('/sitemap.xml', (req, res) => {
